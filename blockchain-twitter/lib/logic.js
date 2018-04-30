@@ -41,3 +41,6 @@ async function sampleTransaction(tx) {
     event.newValue = tx.newValue;
     emit(event);
 }
+
+async function writeTwitt(message){
+}   

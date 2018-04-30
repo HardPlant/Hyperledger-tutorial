@@ -1,0 +1,5 @@
+query readTwitt{
+  description: "Read Tweet"
+  statement:
+    SELECT org.blocktwitt.Tweet
+}
