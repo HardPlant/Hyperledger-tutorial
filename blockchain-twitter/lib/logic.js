@@ -16,3 +16,14 @@
 /**
  * Write your transction processor functions here
  */
+
+/**
+ * Delete a Tweet.
+ * @param {org.blocktwitt.deleteTweet} tx The sample transaction instance.
+ * @transaction
+ */
+function deleteTweet(tx){
+    tx.tweet.isDeleted=true;
+    let tweetRegistry = getAssetRegistry('org.blocktwitt.Tweet');
+    tweetRegistry.update(tx.tweet);
+}
