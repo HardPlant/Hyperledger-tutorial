@@ -1,7 +1,9 @@
 const composer = require('composer-client');
+const moment = require('moment');
 
 bizNetworkConnection = new composer.BusinessNetworkConnection();
 var cardName = "admin@blockchain-twitter";
+//var cardName = "kang@blockchain-twitter";
 var id = 0;
 let userId = "9642970";
 
@@ -11,11 +13,31 @@ const rl = readline.createInterface({
     output:process.stdout
 });
 
-rl.question("Delete a tweet.", (answer)=>{
-    console.log("let's delete "+answer)
-    deleteTweet(answer).then();
-    rl.close();
-});
+async function main(){
+    askWrite();
+}
+
+try{
+    main()
+} catch(e){
+    console.log(e)
+}
+
+function askDelete(){
+    rl.question("Delete a tweet.", (answer)=>{
+        console.log("let's delete "+answer)
+        deleteTweet(answer).then();
+        rl.close();
+    });
+}
+function askWrite(){
+    rl.question("How are you?.", (answer)=>{
+        writeTwitt(answer).then(async ()=>{
+            await readAllTwitts();
+        });
+        rl.close();
+    });
+}
 async function deleteTweet(id){
     let connect = await bizNetworkConnection.connect(cardName); // BusinessNetworkDefinition
     let serializer = connect.getSerializer();
@@ -28,7 +50,8 @@ async function deleteTweet(id){
 }
 
 function getRandomId(){
-    return Math.floor(Math.random()*10000000);
+    //Now returns timestamp.
+    return moment().unix();
 }
 async function writeTwitt(message){
     let connect = await bizNetworkConnection.connect(cardName); // BusinessNetworkDefinition
@@ -49,10 +72,20 @@ async function readAllTwitts(){
     let twittRegistry = await bizNetworkConnection.getAssetRegistry('org.blocktwitt.Tweet');
     let list = await twittRegistry.getAll()
     for(var i=0; i<list.length;i++){
+        console.log(`tweet :${i}`)
         console.log("tweetId : " + list[i].tweetId);
         console.log("message : " + list[i].message);
         console.log("user : " + list[i].user.$identifier);
     }
+}
+async function readLastTwitt(){
+    let connect = await bizNetworkConnection.connect(cardName);
+    let twittRegistry = await bizNetworkConnection.getAssetRegistry('org.blocktwitt.Tweet');
+    let list = await twittRegistry.getAll()
+    var i = 0;
+    console.log("tweetId : " + list[i].tweetId);
+    console.log("message : " + list[i].message);
+    console.log("user : " + list[i].user.$identifier);
 }
 
 async function addUser(firstName, lastName){
@@ -79,16 +112,4 @@ async function listUser(){
 async function deleteTweet(){
     let connect = await bizNetworkConnection.connect(cardName);
 
-}
-
-async function main(){
-    await readAllTwitts()
-    //await deleteTweet()
-    //await readAllTwitts()
-}
-
-try{
-    main()
-} catch(e){
-    console.log(e)
-}
+}  
